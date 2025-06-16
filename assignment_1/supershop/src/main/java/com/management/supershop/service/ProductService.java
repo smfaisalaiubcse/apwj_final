@@ -16,4 +16,5 @@ public interface ProductService {
     List<Product> getProductsByCategory(ProductCategory category);
     void applyExpiryBasedDiscounts();
     void markExpiredProducts();
+    List<Product> getAllProducts();
 }
