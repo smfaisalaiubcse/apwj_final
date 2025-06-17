@@ -120,6 +120,7 @@
             <button onclick="markExpired()">Mark Expired</button>
             <button onclick="applyDiscounts()">Apply Discounts</button>
             <button onclick="loadProducts()">Refresh Products</button>
+            <a href="http://logout:logout@localhost:8080" onclick="setTimeout(() => location.reload(), 100);" style="padding: 10px 15px; background-color: #f44336; color: white; border-radius: 4px; text-decoration: none; display: inline-block;">Logout</a>
         </div>
 
         <div id="addProductForm" class="product-form" style="display: none;">
@@ -182,12 +183,12 @@
         const API_BASE_URL = 'http://localhost:8080/api/products';
         
         // Basic auth credentials
-        const credentials = btoa('admin:admin123');
+        // const credentials = btoa('admin:admin123');
 
         // Headers for API requests
         const headers = {
             'Content-Type': 'application/json',
-            'Authorization': `Basic ${credentials}`
+            // 'Authorization': `Basic ${credentials}`
         };
 
         // Load products when page loads
