@@ -14,7 +14,6 @@ public class Product {
     private BigDecimal discount;
     private boolean available;
 
-    // Getters and Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     
