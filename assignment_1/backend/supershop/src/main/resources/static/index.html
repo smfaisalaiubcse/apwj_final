@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Product Management System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background-color: #333;
+            color: white;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .header h1 {
+            margin: 0;
+        }
+
+        .header p {
+            margin: 5px 0 0 0;
+            font-size: 14px;
+            color: #ccc;
+        }
+
+        .header a {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            padding: 10px 15px;
+            background-color: #f44336;
+            color: white;
+            border-radius: 4px;
+            text-decoration: none;
+        }
+
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        button {
+            padding: 10px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .product-form {
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .product-card {
+            background-color: white;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .product-card h3 {
+            margin-top: 0;
+            color: #333;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        .status-available {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .status-expired {
+            background-color: #f44336;
+            color: white;
+        }
+
+        .warning {
+            color: #f44336;
+        }
+
+        #categoryValueContainer table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        #categoryValueContainer th,
+        #categoryValueContainer td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        #categoryValueContainer th {
+            background-color: #f5f5f5;
+            font-weight: bold;
+        }
+
+        #categoryValueContainer tr:hover {
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>Product Management System</h1>
+        <p>Role: <span id="roleText">Loading...</span></p>
+        <a href="http://logout:logout@localhost:8080" onclick="setTimeout(() => location.reload(), 100);">Logout</a>
+    </div>
+
+    <div class="actions">
+        <button onclick="loadProducts()">All Products</button>
+        <button onclick="showAddProductForm()">Add Product</button>
+        <button onclick="showBulkAddForm()">Bulk Add Products</button>
+        <button onclick="markExpired()">Mark Expired</button>
+        <button onclick="applyDiscounts()">Apply Discounts</button>
+        <button onclick="loadExpiringProducts()">Show Expiring</button>
+        <button onclick="showCategoryValue()">Category Values</button>
+        <button onclick="filterByCategory()">Filter by Category</button>
+    </div>
+
+    <!-- Forms and product containers -->
+    <div id="addProductForm" class="product-form" style="display: none;">
+        <h2>Add Product</h2>
+        <div class="form-group">
+            <label for="name">Name:</label>
+            <input type="text" id="name" required>
+        </div>
+        <div class="form-group">
+            <label for="category">Category:</label>
+            <select id="category" required>
+                <option value="BEAUTY_CARE">Beauty Care</option>
+                <option value="VEGETABLES">Vegetables</option>
+                <option value="MEAT">Meat</option>
+                <option value="GROCERIES">Groceries</option>
+                <option value="OTHERS">Others</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="price">Price:</label>
+            <input type="number" id="price" step="0.01" required>
+        </div>
+        <div class="form-group">
+            <label for="quantity">Quantity:</label>
+            <input type="number" id="quantity" required>
+        </div>
+        <div class="form-group">
+            <label for="expiryDate">Expiry Date:</label>
+            <input type="date" id="expiryDate" required>
+        </div>
+        <button onclick="addProduct()">Submit</button>
+    </div>
+
+    <div id="bulkAddForm" class="product-form" style="display: none;">
+        <h2>Bulk Add Products</h2>
+        <div class="form-group">
+            <label for="bulkData">Products JSON:</label>
+            <textarea id="bulkData" rows="10" style="width: 100%;" placeholder='[
+  {
+    "name": "Product 1",
+    "category": "GROCERIES",
+    "price": 9.99,
+    "quantity": 50,
+    "expiryDate": "2025-06-20",
+    "discount": 0.00,
+    "available": true
+  }
+]'></textarea>
+        </div>
+        <button onclick="bulkAddProducts()">Submit</button>
+    </div>
+
+    <div id="categoryFilterForm" class="product-form" style="display: none;">
+        <h2>Filter by Category</h2>
+        <div class="form-group">
+            <label for="filterCategory">Category:</label>
+            <select id="filterCategory" required>
+                <option value="BEAUTY_CARE">Beauty Care</option>
+                <option value="VEGETABLES">Vegetables</option>
+                <option value="MEAT">Meat</option>
+                <option value="GROCERIES">Groceries</option>
+                <option value="OTHERS">Others</option>
+            </select>
+        </div>
+        <button onclick="loadProductsByCategory()">Apply Filter</button>
+    </div>
+
+    <div id="categoryValueContainer" class="product-form" style="display: none;">
+        <h2>Total Value by Category</h2>
+        <div id="categoryValueContent"></div>
+    </div>
+
+    <div id="productsContainer" class="products-grid">
+        <!-- Products will be displayed here -->
+    </div>
+</div>
+
+<script>
+    const API_BASE_URL = 'http://localhost:8080/api/products';
+    const headers = {
+        'Content-Type': 'application/json'
+    };
+
+    document.addEventListener('DOMContentLoaded', () => {
+        loadProducts();
+        loadUserRole();
+    });
+
+    async function loadUserRole() {
+        try {
+            const response = await fetch('http://localhost:8080/api/user/role', {
+                headers: headers
+            });
+            if (!response.ok) throw new Error('Failed to fetch role');
+            const data = await response.json();
+            document.getElementById('roleText').textContent = data.role;
+        } catch (error) {
+            console.error('Error fetching user role:', error);
+            document.getElementById('roleText').textContent = 'Unknown';
+        }
+    }
+
+    function hideAllContainers() {
+        document.getElementById('addProductForm').style.display = 'none';
+        document.getElementById('bulkAddForm').style.display = 'none';
+        document.getElementById('categoryFilterForm').style.display = 'none';
+        document.getElementById('categoryValueContainer').style.display = 'none';
+    }
+
+    function showAddProductForm() {
+        hideAllContainers();
+        document.getElementById('addProductForm').style.display = 'block';
+    }
+
+    function showBulkAddForm() {
+        hideAllContainers();
+        document.getElementById('bulkAddForm').style.display = 'block';
+    }
+
+    async function loadExpiringProducts() {
+        try {
+            hideAllContainers();
+            const response = await fetch(`${API_BASE_URL}/expiring`, { headers });
+            const products = await response.json();
+            displayProducts(products);
+        } catch (error) {
+            alert('Error loading expiring products');
+        }
+    }
+
+    async function showCategoryValue() {
+        try {
+            hideAllContainers();
+            const response = await fetch(`${API_BASE_URL}/category-value`, { headers });
+            const categoryValues = await response.json();
+
+            let html = '<table>';
+            html += '<tr><th>Category</th><th>Total Value</th></tr>';
+
+            for (const [category, value] of Object.entries(categoryValues)) {
+                html += `<tr><td>${category}</td><td>$${value.toFixed(2)}</td></tr>`;
+            }
+
+            document.getElementById('categoryValueContent').innerHTML = html;
+            document.getElementById('categoryValueContainer').style.display = 'block';
+        } catch (error) {
+            alert('Error loading category values');
+        }
+    }
+
+    function filterByCategory() {
+        hideAllContainers();
+        document.getElementById('categoryFilterForm').style.display = 'block';
+    }
+
+    async function loadProductsByCategory() {
+        const category = document.getElementById('filterCategory').value;
+        try {
+            const response = await fetch(`${API_BASE_URL}/category/${category}`, { headers });
+            const products = await response.json();
+            displayProducts(products);
+        } catch {
+            alert('Error loading products by category');
+        }
+    }
+
+    async function loadProducts() {
+        try {
+            hideAllContainers();
+            const response = await fetch(API_BASE_URL, { headers });
+            const products = await response.json();
+            displayProducts(products);
+        } catch {
+            alert('Error loading products');
+        }
+    }
+
+    async function addProduct() {
+        const product = {
+            name: document.getElementById('name').value,
+            category: document.getElementById('category').value,
+            price: parseFloat(document.getElementById('price').value),
+            quantity: parseInt(document.getElementById('quantity').value),
+            expiryDate: document.getElementById('expiryDate').value,
+            discount: 0.00,
+            available: true
+        };
+
+        try {
+            const response = await fetch(API_BASE_URL, {
+                method: 'POST',
+                headers,
+                body: JSON.stringify(product)
+            });
+            if (response.ok) {
+                alert('Product added');
+                document.getElementById('addProductForm').style.display = 'none';
+                loadProducts();
+            } else {
+                alert('Error adding product');
+            }
+        } catch {
+            alert('Error adding product');
+        }
+    }
+
+    async function bulkAddProducts() {
+        try {
+            const products = JSON.parse(document.getElementById('bulkData').value);
+            const response = await fetch(`${API_BASE_URL}/bulk`, {
+                method: 'POST',
+                headers,
+                body: JSON.stringify(products)
+            });
+
+            if (response.ok) {
+                alert('Products added');
+                document.getElementById('bulkAddForm').style.display = 'none';
+                loadProducts();
+            } else {
+                alert('Error adding products');
+            }
+        } catch {
+            alert('Invalid JSON format');
+        }
+    }
+
+    async function markExpired() {
+        try {
+            const response = await fetch(`${API_BASE_URL}/mark-expired`, {
+                method: 'POST',
+                headers
+            });
+            if (response.ok) {
+                alert('Expired products marked');
+                loadProducts();
+            } else {
+                alert('Error marking expired products');
+            }
+        } catch {
+            alert('Error marking expired products');
+        }
+    }
+
+    async function applyDiscounts() {
+        try {
+            const response = await fetch(`${API_BASE_URL}/apply-discounts`, {
+                method: 'POST',
+                headers
+            });
+            if (response.ok) {
+                alert('Discounts applied');
+                loadProducts();
+            } else {
+                alert('Error applying discounts');
+            }
+        } catch {
+            alert('Error applying discounts');
+        }
+    }
+
+    function displayProducts(products) {
+        const container = document.getElementById('productsContainer');
+        container.innerHTML = '';
+
+        products.forEach(product => {
+            const card = document.createElement('div');
+            card.className = 'product-card';
+
+            const expiryDate = new Date(product.expiryDate);
+            const today = new Date();
+            const daysUntilExpiry = Math.ceil((expiryDate - today) / (1000 * 60 * 60 * 24));
+
+            let expiryWarning = '';
+            if (daysUntilExpiry <= 7 && daysUntilExpiry > 0) {
+                expiryWarning = `<p class="warning">Expires in ${daysUntilExpiry} days!</p>`;
+            }
+
+            card.innerHTML = `
+          <h3>${product.name}</h3>
+          <p>Category: ${product.category}</p>
+          <p>Price: $${product.price}</p>
+          <p>Quantity: ${product.quantity}</p>
+          <p>Expiry Date: ${product.expiryDate}</p>
+          <p>Discount: ${product.discount * 100}%</p>
+          <span class="status-badge ${product.available ? 'status-available' : 'status-expired'}">
+            ${product.available ? 'Available' : 'Expired'}
+          </span>
+          ${expiryWarning}
+        `;
+
+            container.appendChild(card);
+        });
+    }
+</script>
+</body>
+</html>
