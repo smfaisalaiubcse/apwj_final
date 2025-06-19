@@ -1,3 +1,4 @@
+```markdown
 # API Documentation
 
 ## ProductController
@@ -9,69 +10,156 @@
 
 #### GET `/api/products`
 - **Description:** Retrieve a list of all products.
-- **Response:** `200 OK` — Returns a list of products.
-
-#### GET `/api/products/{id}`
-- **Description:** Retrieve a product by its ID.
-- **Path Variable:** `id` (Long) — Product ID.
-- **Response:** `200 OK` — Returns the product details.
-- **Error:** `404 Not Found` — If product does not exist.
+- **Response:** `200 OK`
+- **Response Example:**
+```json
+[
+  {
+    "id": 1,
+    "name": "Milk",
+    "category": "DAIRY",
+    "price": 2.5,
+    "expiryDate": "2024-07-01"
+  }
+]
+```
 
 #### POST `/api/products`
 - **Description:** Create a new product.
-- **Request Body:** Product object (JSON).
-- **Response:** `201 Created` — Returns the created product.
+- **Request Body Example:**
+```json
+{
+  "name": "Bread",
+  "category": "BAKERY",
+  "price": 1.2,
+  "expiryDate": "2024-07-10"
+}
+```
+- **Response:** `200 OK`
+- **Response Example:**
+```json
+{
+  "id": 2,
+  "name": "Bread",
+  "category": "BAKERY",
+  "price": 1.2,
+  "expiryDate": "2024-07-10"
+}
+```
+
+#### POST `/api/products/bulk`
+- **Description:** Add multiple products.
+- **Request Body Example:**
+```json
+[
+  {
+    "name": "Eggs",
+    "category": "DAIRY",
+    "price": 3.0,
+    "expiryDate": "2024-07-05"
+  },
+  {
+    "name": "Butter",
+    "category": "DAIRY",
+    "price": 2.8,
+    "expiryDate": "2024-07-15"
+  }
+]
+```
+- **Response:** `200 OK`
+- **Response Example:**
+```json
+[
+  {
+    "id": 3,
+    "name": "Eggs",
+    "category": "DAIRY",
+    "price": 3.0,
+    "expiryDate": "2024-07-05"
+  },
+  {
+    "id": 4,
+    "name": "Butter",
+    "category": "DAIRY",
+    "price": 2.8,
+    "expiryDate": "2024-07-15"
+  }
+]
+```
 
 #### PUT `/api/products/{id}`
 - **Description:** Update an existing product.
 - **Path Variable:** `id` (Long) — Product ID.
-- **Request Body:** Product object (JSON).
-- **Response:** `200 OK` — Returns the updated product.
-- **Error:** `404 Not Found` — If product does not exist.
+- **Request Body Example:**
+```json
+{
+  "name": "Milk",
+  "category": "DAIRY",
+  "price": 2.7,
+  "expiryDate": "2024-07-01"
+}
+```
+- **Response:** `200 OK`
+- **Response Example:**
+```json
+{
+  "id": 1,
+  "name": "Milk",
+  "category": "DAIRY",
+  "price": 2.7,
+  "expiryDate": "2024-07-01"
+}
+```
 
-#### DELETE `/api/products/{id}`
-- **Description:** Delete a product by its ID.
-- **Path Variable:** `id` (Long) — Product ID.
-- **Response:** `204 No Content`
-- **Error:** `404 Not Found` — If product does not exist.
+#### GET `/api/products/expiring`
+- **Description:** Retrieve products that are expiring soon.
+- **Response:** `200 OK`
+- **Response Example:**
+```json
+[
+  {
+    "id": 5,
+    "name": "Yogurt",
+    "category": "DAIRY",
+    "price": 1.5,
+    "expiryDate": "2024-06-30"
+  }
+]
+```
 
----
+#### GET `/api/products/category-value`
+- **Description:** Get total value of products by category.
+- **Response:** `200 OK`
+- **Response Example:**
+```json
+{
+  "DAIRY": 10.5,
+  "BAKERY": 5.2
+}
+```
 
-## UserRoleController
+#### GET `/api/products/category/{category}`
+- **Description:** Get products by category.
+- **Path Variable:** `category` (String) — Product Category.
+- **Response:** `200 OK`
+- **Response Example:**
+```json
+[
+  {
+    "id": 6,
+    "name": "Cheese",
+    "category": "DAIRY",
+    "price": 4.0,
+    "expiryDate": "2024-07-20"
+  }
+]
+```
 
-### Base Path
-`/api/user-roles`
+#### POST `/api/products/apply-discounts`
+- **Description:** Apply expiry-based discounts to products.
+- **Response:** `200 OK`
 
-### Endpoints
-
-#### GET `/api/user-roles`
-- **Description:** Retrieve a list of all user roles.
-- **Response:** `200 OK` — Returns a list of user roles.
-
-#### GET `/api/user-roles/{id}`
-- **Description:** Retrieve a user role by its ID.
-- **Path Variable:** `id` (Long) — User Role ID.
-- **Response:** `200 OK` — Returns the user role details.
-- **Error:** `404 Not Found` — If user role does not exist.
-
-#### POST `/api/user-roles`
-- **Description:** Create a new user role.
-- **Request Body:** UserRole object (JSON).
-- **Response:** `201 Created` — Returns the created user role.
-
-#### PUT `/api/user-roles/{id}`
-- **Description:** Update an existing user role.
-- **Path Variable:** `id` (Long) — User Role ID.
-- **Request Body:** UserRole object (JSON).
-- **Response:** `200 OK` — Returns the updated user role.
-- **Error:** `404 Not Found` — If user role does not exist.
-
-#### DELETE `/api/user-roles/{id}`
-- **Description:** Delete a user role by its ID.
-- **Path Variable:** `id` (Long) — User Role ID.
-- **Response:** `204 No Content`
-- **Error:** `404 Not Found` — If user role does not exist.
-
----
-
-**Note:** Replace object names and fields with actual model details as implemented in your project.
+#### POST `/api/products/mark-expired`
+- **Description:** Mark expired products.
+- **Response:** `200 OK`
+```
