@@ -17,4 +17,5 @@ public interface ProductService {
     void applyExpiryBasedDiscounts();
     void markExpiredProducts();
     List<Product> getAllProducts();
+    void deleteProduct(Long id);
 }

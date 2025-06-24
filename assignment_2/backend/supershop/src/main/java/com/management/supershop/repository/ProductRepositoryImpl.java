@@ -2,57 +2,97 @@ package com.management.supershop.repository;
 
 import com.management.supershop.model.Product;
 import com.management.supershop.model.ProductCategory;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
 @Repository
 public class ProductRepositoryImpl implements ProductRepository {
-    private final Map<Long, Product> productStore = new ConcurrentHashMap<>();
-    private Long currentId = 1L;
+    private final JdbcTemplate jdbcTemplate;
+
+    public ProductRepositoryImpl(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
 
     @Override
     public Product save(Product product) {
-        product.setId(currentId++);
-        productStore.put(product.getId(), product);
+        String query = "INSERT INTO products (name, category, price, quantity, expiry_date, discount, available) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        jdbcTemplate.update(query, product.getName(), product.getCategory().name(), product.getPrice(),
+                product.getQuantity(), product.getExpiryDate(), product.getDiscount(), product.isAvailable());
         return product;
     }
 
     @Override
     public List<Product> saveAll(List<Product> products) {
-        return products.stream()
-                .map(this::save)
-                .collect(Collectors.toList());
+        // Example implementation for saving a list of products (can use batch update)
+        for (Product product : products) {
+            save(product);
+        }
+        return products;
     }
 
     @Override
     public Product findById(Long id) {
-        return productStore.get(id);
+        String query = "SELECT * FROM products WHERE id = ?";
+        return jdbcTemplate.queryForObject(query, (rs, rowNum) -> {
+            Product product = new Product();
+            product.setId(rs.getLong("id"));
+            product.setName(rs.getString("name"));
+            product.setCategory(ProductCategory.valueOf(rs.getString("category")));
+            product.setPrice(rs.getBigDecimal("price"));
+            product.setQuantity(rs.getInt("quantity"));
+            product.setExpiryDate(rs.getDate("expiry_date").toLocalDate());
+            product.setDiscount(rs.getBigDecimal("discount"));
+            product.setAvailable(rs.getBoolean("available"));
+            return product;
+        }, id);
     }
 
     @Override
     public List<Product> findAll() {
-        return new ArrayList<>(productStore.values());
+        String query = "SELECT * FROM products";
+        return jdbcTemplate.query(query, (rs, rowNum) -> {
+            Product product = new Product();
+            product.setId(rs.getLong("id"));
+            product.setName(rs.getString("name"));
+            product.setCategory(ProductCategory.valueOf(rs.getString("category")));
+            product.setPrice(rs.getBigDecimal("price"));
+            product.setQuantity(rs.getInt("quantity"));
+            product.setExpiryDate(rs.getDate("expiry_date") != null ? rs.getDate("expiry_date").toLocalDate() : null);
+            product.setDiscount(rs.getBigDecimal("discount"));
+            product.setAvailable(rs.getBoolean("available"));
+            return product;
+        });
     }
 
     @Override
     public List<Product> findByCategory(ProductCategory category) {
-        return productStore.values().stream()
-                .filter(product -> product.getCategory() == category)
-                .collect(Collectors.toList());
+        String query = "SELECT * FROM products WHERE category = ?";
+        return jdbcTemplate.query(query, (rs, rowNum) -> {
+            Product product = new Product();
+            product.setId(rs.getLong("id"));
+            product.setName(rs.getString("name"));
+            product.setCategory(ProductCategory.valueOf(rs.getString("category")));
+            product.setPrice(rs.getBigDecimal("price"));
+            product.setQuantity(rs.getInt("quantity"));
+            product.setExpiryDate(rs.getDate("expiry_date") != null ? rs.getDate("expiry_date").toLocalDate() : null);
+            product.setDiscount(rs.getBigDecimal("discount"));
+            product.setAvailable(rs.getBoolean("available"));
+            return product;
+        }, category.name());
     }
 
     @Override
     public void update(Product product) {
-        productStore.put(product.getId(), product);
+        String query = "UPDATE products SET name = ?, category = ?, price = ?, quantity = ?, expiry_date = ?, discount = ?, available = ? WHERE id = ?";
+        jdbcTemplate.update(query, product.getName(), product.getCategory().name(), product.getPrice(),
+                product.getQuantity(), product.getExpiryDate(), product.getDiscount(), product.isAvailable(), product.getId());
     }
 
     @Override
     public void delete(Long id) {
-        productStore.remove(id);
+        String query = "DELETE FROM products WHERE id = ?";
+        jdbcTemplate.update(query, id); // Implements the delete functionality
     }
 }
