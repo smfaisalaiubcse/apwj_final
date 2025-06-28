@@ -8,7 +8,7 @@ import java.util.Optional;
 
 @Repository
 public class UserRepository {
-    
+
     @Autowired
     private JdbcTemplate jdbcTemplate;
 

@@ -19,7 +19,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public String login(@RequestParam String email, @RequestParam String password) {
-        return authService.login(email, password);
+    public String login(@RequestBody User user) {
+        return authService.login(user.getEmail(), user.getPassword());
     }
 }
