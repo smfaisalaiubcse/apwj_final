@@ -100,6 +100,71 @@ Develop an Inventory Management System for a super shop to manage product stock,
 
 **Note:** See the `assignment1/` folder for source code, instructions, and sample input/output.
 
+### Assignment 2: Enhanced Super Shop (Spring Boot)
+
+**Final: Assignment-2 (Spring Boot) [Enhanced Super Shop]**  
+**Due:** June 24, 2025, 11:59 PM  
+**Closes:** June 26, 2025, 11:59 PM
+
+#### Instructions
+
+This assignment builds upon Assignment-1. You will migrate your Inventory Management System to Spring Boot, integrate a relational database, and implement user-focused features, security, logging, and reporting.
+
+#### Technical Requirements
+
+1. **Spring Boot Migration**
+    - Rebuild the application using Spring Boot (no XML configuration).
+    - Use standard Spring Boot conventions for controllers/APIs, services, repositories, and configurations.
+
+2. **Database Integration**
+    - Use a relational database for all data persistence, including:
+        - Product information
+        - Users and roles
+        - Wishlists and carts
+        - Orders and invoices
+        - Logs (optional)
+
+3. **Spring Security**
+    - Implement authentication and authorization using Spring Security.
+    - Define two roles:
+        - **ADMIN:** Full system control.
+        - **USER:** Can browse, wishlist, order, and view personal data.
+
+#### Functional Requirements
+
+**For Users:**
+- **Wishlist:** Add products to a personal wishlist.
+- **Cart:**
+    - Add multiple products.
+    - Modify quantity or remove items.
+- **Checkout:**
+    - Calculate discounts for items near expiry.
+    - Generate a detailed invoice.
+- **Invoice & History:** View past orders with invoice summaries.
+
+**For Admins:**
+- Manage products (add, edit, delete).
+- View all customer orders with full details.
+- Generate a Monthly Sales Report including:
+    - Total sales per category
+    - Total revenue
+    - Number of orders
+    - Best-selling products
+
+#### AOP-based Logging
+
+- Use Spring AOP to log every access at:
+    - Controller/Rest Controller
+    - Service
+    - Repository
+- Log format must include:
+    - Username
+    - Accessed Method
+    - Timestamp
+- Save all logs in a file named `app.log`.
+
+**Note:** See the `assignment2/` folder for source code, setup instructions, and sample data.
+
 
 ## Projects
 
