@@ -7,7 +7,7 @@ public class User {
     private String name;
     private String email;
     private String password;
-    private String role;
+    private Role role; // Change from `String` to `Role` enum
     private LocalDateTime createdAt;
 
     // Getters and Setters
@@ -43,11 +43,11 @@ public class User {
         this.password = password;
     }
 
-    public String getRole() {
+    public Role getRole() {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(Role role) {
         this.role = role;
     }
 
