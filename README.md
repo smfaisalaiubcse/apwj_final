@@ -50,10 +50,56 @@ apwj_final/
 
 ## Assignments
 
-Each assignment folder contains:
-- Source code (`.java` files)
-- Instructions or problem statements
-- Sample input/output (if applicable)
+### Assignment 1: Inventory Management System (Super Shop)
+
+**Final: Assignment-1 (Legacy) [Super Shop]**  
+**Due:** June 19, 2025, 11:59 PM  
+**Closes:** June 21, 2025, 11:59 PM
+
+#### Business Requirements
+
+Develop an Inventory Management System for a super shop to manage product stock, categorization, pricing, and expiry-based discounts. Use **Spring Legacy configuration (XML-based)** for beans, services, repositories, and controllers.
+
+#### Functional Requirements
+
+**Product Categorization**
+- Products must be categorized into types such as:
+    - Beauty Care
+    - Vegetables
+    - Meat
+    - Groceries
+    - Others (optional)
+- Each product will have:
+    - ID
+    - Name
+    - Category
+    - Price
+    - Quantity
+    - Expiry Date (if applicable)
+    - Discount (optional)
+
+**Product Management**
+- Admin can add products one by one or in bulk.
+- Admin can modify a product’s details individually (e.g., price, name, expiry).
+
+**Expiry and Discount Logic**
+- Show a list of all products that will expire within the next 7 days.
+- For these products, apply a discount (e.g., 20%) and show the new discounted price.
+- Expired products (expiry date < today) should be marked as unavailable.
+
+**Reports**
+- Generate a report showing:
+    - Total price (value) of all available products grouped by category.
+    - List of products by category with applied discounts (if any).
+
+#### Technical Requirements
+
+- Backend: Spring Framework with XML-based configuration only, exposing RESTful APIs for the above requirements.
+- Frontend: Plain HTML, CSS, and JavaScript consuming the backend APIs.
+- No database required for this task.
+
+**Note:** See the `assignment1/` folder for source code, instructions, and sample input/output.
+
 
 ## Projects
 
