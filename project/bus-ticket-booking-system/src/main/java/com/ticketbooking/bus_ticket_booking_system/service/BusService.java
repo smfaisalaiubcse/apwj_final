@@ -8,6 +8,7 @@ import com.ticketbooking.bus_ticket_booking_system.repository.BusRepository;
 import com.ticketbooking.bus_ticket_booking_system.repository.RouteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -18,6 +19,7 @@ public class BusService {
     @Autowired private RouteRepository routeRepo;
     @Autowired private BusRepository busRepo;
 
+    @Transactional
     public void addBus(Bus bus) {
         BusCompany company = bus.getCompany();
 
