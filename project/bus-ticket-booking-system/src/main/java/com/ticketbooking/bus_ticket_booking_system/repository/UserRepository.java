@@ -40,4 +40,9 @@ public class UserRepository {
         jdbcTemplate.update(sql, user.getPassword(), user.getEmail());
     }
 
+    public void updateProfile(User user) {
+        String sql = "UPDATE users SET name = ?, email = ? WHERE user_id = ?";
+        jdbcTemplate.update(sql, user.getName(), user.getEmail(), user.getUserId());
+    }
+
 }
