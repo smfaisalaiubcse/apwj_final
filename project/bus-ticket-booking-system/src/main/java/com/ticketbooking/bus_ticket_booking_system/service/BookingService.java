@@ -16,15 +16,21 @@ public class BookingService {
     @Autowired
     private BookingRepository bookingRepo;
     @Transactional
-    public void bookSeat(Booking booking) {
-        // Check if already booked
+    public void bookSeat(Booking booking, String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        // Set the authenticated user's ID
+        booking.setUserId(user.getUserId());
+
         if (bookingRepo.isSeatAlreadyBooked(booking.getTripId(), booking.getSeatNumber())) {
             throw new RuntimeException("Seat " + booking.getSeatNumber() + " is already booked!");
         }
 
         bookingRepo.save(booking);
-        bookingRepo.decreaseBusCapacityByTripId(booking.getTripId()); // 👈 NEW
+        bookingRepo.decreaseBusCapacityByTripId(booking.getTripId());
     }
+
 
     @Autowired
     private UserRepository userRepository;

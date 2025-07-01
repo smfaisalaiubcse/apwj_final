@@ -20,24 +20,30 @@ public class BookingController {
     private BookingService bookingService;
 
     @PostMapping
-    public ResponseEntity<BookingResponse> bookSeat(@RequestBody Booking booking) {
+    public ResponseEntity<BookingResponse> bookSeat(
+            @RequestBody Booking booking,
+            Authentication authentication
+    ) {
         try {
-            bookingService.bookSeat(booking);
+            String email = authentication.getName(); // Extract from JWT
+            bookingService.bookSeat(booking, email); // Pass email, not userId from payload
+
             BookingResponse response = new BookingResponse(
-                true,
-                "Seat " + booking.getSeatNumber() + " booked successfully!",
-                booking.getSeatNumber()
+                    true,
+                    "Seat " + booking.getSeatNumber() + " booked successfully!",
+                    booking.getSeatNumber()
             );
             return ResponseEntity.ok(response);
         } catch (RuntimeException ex) {
             BookingResponse response = new BookingResponse(
-                false,
-                ex.getMessage(),
-                booking.getSeatNumber()
+                    false,
+                    ex.getMessage(),
+                    booking.getSeatNumber()
             );
             return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
         }
     }
+
 
     @GetMapping("/my")
     public ResponseEntity<?> getMyBookings(Authentication authentication) {
