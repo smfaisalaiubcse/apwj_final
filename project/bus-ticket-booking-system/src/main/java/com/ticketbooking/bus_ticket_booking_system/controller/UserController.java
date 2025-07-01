@@ -1,5 +1,6 @@
 package com.ticketbooking.bus_ticket_booking_system.controller;
 
+import com.ticketbooking.bus_ticket_booking_system.dto.ChangePasswordRequest;
 import com.ticketbooking.bus_ticket_booking_system.dto.UserProfileDto;
 import com.ticketbooking.bus_ticket_booking_system.model.User;
 import com.ticketbooking.bus_ticket_booking_system.service.UserService;
@@ -37,5 +38,19 @@ public class UserController {
         response.put("message", "Profile updated successfully.");
         return ResponseEntity.ok(response);
     }
+
+    @PutMapping("/password/change")
+    public ResponseEntity<Map<String, String>> changePassword(
+            @RequestBody ChangePasswordRequest request,
+            Authentication authentication
+    ) {
+        String email = authentication.getName();
+        userService.changePassword(email, request.getOldPassword(), request.getNewPassword());
+
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Password changed successfully.");
+        return ResponseEntity.ok(response);
+    }
+
 }
 
