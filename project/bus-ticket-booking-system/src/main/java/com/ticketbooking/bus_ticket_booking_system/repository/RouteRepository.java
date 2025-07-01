@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -30,5 +31,16 @@ public class RouteRepository {
             return Optional.empty();
         }, name);
     }
+    public List<Route> findAll() {
+        String sql = "SELECT * FROM route";
+
+        return jdbc.query(sql, (rs, rowNum) -> {
+            Route route = new Route();
+            route.setRouteId(rs.getInt("route_id"));
+            route.setName(rs.getString("name"));
+            return route;
+        });
+    }
+
 }
 
