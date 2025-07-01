@@ -22,6 +22,9 @@ public class AuthService {
     @Autowired
     private JwtUtils jwtUtils;
 
+    @Autowired
+    private EmailService emailService;
+
     public void signup(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword())); // Encode password
         if (user.getRole() == null) {
@@ -29,6 +32,11 @@ public class AuthService {
         }
         user.setCreatedAt(LocalDateTime.now());
         userRepository.save(user); // Save user to the database
+        emailService.sendSimpleEmail(
+                user.getEmail(),
+                "Welcome!",
+                "Thanks for signing up, " + user.getName()
+        );
     }
 
     public String login(String email, String password) {
