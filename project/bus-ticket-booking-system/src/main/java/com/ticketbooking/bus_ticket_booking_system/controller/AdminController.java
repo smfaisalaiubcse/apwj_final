@@ -21,6 +21,7 @@ public class AdminController {
         return ResponseEntity.ok(Map.of("message", "Admin stats page"));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/trips/create")
     public ResponseEntity<String> createTrip(@RequestBody Trip trip) {
         tripService.createTrip(trip);
