@@ -1,5 +1,6 @@
 package com.ticketbooking.bus_ticket_booking_system.controller;
 
+import com.ticketbooking.bus_ticket_booking_system.dto.BookingResponse;
 import com.ticketbooking.bus_ticket_booking_system.model.Booking;
 import com.ticketbooking.bus_ticket_booking_system.service.BookingService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,12 +19,22 @@ public class BookingController {
     private BookingService bookingService;
 
     @PostMapping
-    public ResponseEntity<String> bookSeat(@RequestBody Booking booking) {
+    public ResponseEntity<BookingResponse> bookSeat(@RequestBody Booking booking) {
         try {
             bookingService.bookSeat(booking);
-            return ResponseEntity.ok("Seat " + booking.getSeatNumber() + " booked successfully!");
+            BookingResponse response = new BookingResponse(
+                true,
+                "Seat " + booking.getSeatNumber() + " booked successfully!",
+                booking.getSeatNumber()
+            );
+            return ResponseEntity.ok(response);
         } catch (RuntimeException ex) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
+            BookingResponse response = new BookingResponse(
+                false,
+                ex.getMessage(),
+                booking.getSeatNumber()
+            );
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
         }
     }
 }
