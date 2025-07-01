@@ -34,4 +34,10 @@ public class UserRepository {
         String sql = "INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)";
         jdbcTemplate.update(sql, user.getName(), user.getEmail(), user.getPassword(), user.getRole().name()); // Use .name() here
     }
+
+    public void updatePassword(User user) {
+        String sql = "UPDATE users SET password = ? WHERE email = ?";
+        jdbcTemplate.update(sql, user.getPassword(), user.getEmail());
+    }
+
 }

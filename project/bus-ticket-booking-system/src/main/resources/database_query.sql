@@ -51,3 +51,11 @@ CREATE TABLE booking (
                          FOREIGN KEY (user_id) REFERENCES users(user_id),
                          FOREIGN KEY (trip_id) REFERENCES trip(trip_id)
 );
+
+CREATE TABLE password_reset_token (
+                                      id INT AUTO_INCREMENT PRIMARY KEY,
+                                      email VARCHAR(100) NOT NULL,
+                                      token VARCHAR(255) NOT NULL,
+                                      expiration_time DATETIME NOT NULL,
+                                      used BOOLEAN DEFAULT FALSE
+);
