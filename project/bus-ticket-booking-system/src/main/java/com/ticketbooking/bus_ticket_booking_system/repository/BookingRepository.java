@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public class BookingRepository {
 
@@ -33,5 +35,20 @@ public class BookingRepository {
 
         jdbc.update(sql, tripId);
     }
+
+    public List<Booking> findByUserId(int userId) {
+        String sql = "SELECT * FROM booking WHERE user_id = ? ORDER BY booking_time DESC";
+
+        return jdbc.query(sql, new Object[]{userId}, (rs, rowNum) -> {
+            Booking booking = new Booking();
+            booking.setBookingId(rs.getInt("booking_id"));
+            booking.setUserId(rs.getInt("user_id"));
+            booking.setTripId(rs.getInt("trip_id"));
+            booking.setSeatNumber(rs.getString("seat_number"));
+            booking.setBookingTime(rs.getTimestamp("booking_time").toLocalDateTime());
+            return booking;
+        });
+    }
+
 }
 

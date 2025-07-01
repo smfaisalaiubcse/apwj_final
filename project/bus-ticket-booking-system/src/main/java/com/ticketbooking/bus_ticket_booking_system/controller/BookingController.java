@@ -6,10 +6,11 @@ import com.ticketbooking.bus_ticket_booking_system.service.BookingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Collections;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/bookings")
@@ -37,5 +38,18 @@ public class BookingController {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
         }
     }
+
+    @GetMapping("/my")
+    public ResponseEntity<?> getMyBookings(Authentication authentication) {
+        String email = authentication.getName(); // From SecurityContext
+        List<Booking> bookings = bookingService.getBookingsForUser(email);
+
+        if (bookings.isEmpty()) {
+            return ResponseEntity.ok(Collections.singletonMap("message", "No bookings yet."));
+        }
+
+        return ResponseEntity.ok(bookings);
+    }
+
 }
 
